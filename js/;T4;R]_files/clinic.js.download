@@ -1,0 +1,189 @@
+﻿function popup_appointment() {
+    $("#div_alert").show();
+    $("#div_message").html('<iframe src="bookappointment.aspx" style="width:100%;border:none;height:90vh;"></iframe>');
+}
+
+function close_appointment() {
+    $("#div_alert").hide();
+    //$("#div_message").html('<iframe src="bookappointment.aspx" style="width:100%;border:none;height:90vh;"></iframe>');
+}
+
+
+function show_book_appointment() {
+    $("#div_book_appointment").show();
+
+}
+
+function make_appointment(popup) {
+    
+    var firstname = $("#txtfirstname").val();
+    var lastname = $("#txtlastname").val();
+    var service = $('#dplservice').find(":selected").text();
+    var phone = $("#txtphone").val();
+    var appdate = $("#txtdate").val();
+    var apptime = $("#txttime").val();
+    var message = $("#txtmessage").val();
+    var data_valid = true;
+    if (firstname == "" || firstname == undefined) {
+        alert("Please enter your first name.")
+        return;
+    }
+    if (lastname == "" || lastname == undefined) {
+        alert("Please enter your last name.")
+        return;
+    }
+    if (service == "" || service == undefined || service=="Select Your Services") {
+        alert("Please enter service.")
+        return;
+    }
+    if (phone == "" || phone == undefined) {
+        alert("Please enter you phone number.")
+        return;
+    }
+
+    if ($.isNumeric(phone.replace(" ", "")) == false || phone.replace(" ", "").length < 9 || phone.replace(" ", "").length > 10) {
+        alert("Invalid phone number.")
+        return;
+    }
+
+    if (appdate == "" || appdate == undefined) {
+        alert("Please select appointment date.")
+        return;
+    }
+
+    if (apptime == "" || apptime == undefined) {
+        alert("Please select appointment time.")
+        return;
+    }
+
+
+    
+    SendEmail("info@metaeyeclinic.com", "Request for appointment", firstname, lastname, service, phone, appdate, apptime, message,popup); 
+
+}
+
+
+
+function SendEmail(ToEmail, Subject, firstname, lastname, service, phone, a_date, a_time, message,popup) {
+    console.log("start sendEmail")
+   
+    $.ajax({
+        type: "POST",
+        dataType: "Json",
+        contentType: "application/json; charset=utf-8",
+        url: "clinicservice.asmx/SendEmail",
+        data: '{ToEmail:"' + ToEmail + '", Subject:"' + Subject + '",firstname:"' + firstname + '", lastname:"' + lastname + '", service:"' + service + '", phone:"' + phone + '", a_date:"' + a_date + '", a_time:"' + a_time + '", message:"' + message + '"}',
+        beforeSend: function () {
+          
+            if (popup == true) {
+                console.log("ajax start");
+                $('#div_loadding_popup').append('<div style="text-align:center;margin-top:30vh;width:100%"> <img src = "images/waiting.gif" style = "height:50px" /> </div >');
+            } else {
+                $('#div_loadding').append('<div style="text-align:center;margin-top:30vh;width:100%"> <img src = "images/waiting.gif" style = "height:50px" /> </div >');
+            }
+            
+        },
+        complete: function () {
+            
+            if (popup == true) {
+                console.log("ajax completed");
+                $('#div_loadding_popup').hide();
+            } else {
+                $('#div_loadding').hide();
+            }
+            
+        },
+        success: function (data) {
+            console.log(data.d);
+            if (data.d == 'sent') {
+                if (popup == true) {
+                    $("#div_appoinment_form_popup").html("We have got you appointment, our teams will contact you sooon. Thanks");
+                   
+                } else {
+                    alert("We have got you appointment, our teams will contact you sooon. Thanks");
+                }
+            } else {
+                alert("Eror! Please try gain.");
+            }
+        },
+        error: function (result) {
+            console.log(result);
+        }
+    });
+}
+
+
+function GetHeaderMedia() {
+    console.log("start GetHeaderMedia")
+    $.ajax({
+        cache: false,
+        async: false,
+        type: "POST",
+        dataType: "Json",
+        contentType: "application/json; charset=utf-8",
+        url: "clinicservice.asmx/GetHeaderMedia",
+        data: '',
+        complete: function () {
+            
+        },
+        success: function (data) {
+            console.log(data.d);
+            $(".py-1").html(data.d);
+        },
+        error: function (result) {
+            console.log(result);
+        }
+    });
+}
+
+function GetHeaderContact() {
+    $.ajax({
+        cache: false,
+        async: false,
+        type: "POST",
+        dataType: "Json",
+        contentType: "application/json; charset=utf-8",
+        url: "ClinicService.asmx/GetHeaderContact",
+        data: '',
+        complete: function () {
+
+        },
+        success: function (data) {
+            console.log(data.d);
+            $(".myheadercontact").html(data.d);
+        },
+        error: function (result) {
+            console.log(result);
+        }
+    });
+}
+
+
+function GetHeaderMenu(menu) {
+    $.ajax({
+        cache: false,
+        async: false,
+        type: "POST",
+        dataType: "Json",
+        contentType: "application/json; charset=utf-8",
+        url: "ClinicService.asmx/GetHeaderMenu",
+        data: '{Menu:"' + menu + '"}',
+        complete: function () {
+
+        },
+        success: function (data) {
+            console.log(data.d);
+            $("#ftco-navbar").html(data.d);
+        },
+        error: function (result) {
+            console.log(result);
+        }
+    });
+}
+
+
+
+function active_menu() {
+    var menuname = window.location.pathname.replace("/","");
+    $("#menu_" + menuname).addClass("active");
+}

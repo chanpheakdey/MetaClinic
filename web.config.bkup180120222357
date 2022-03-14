@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<configuration>
+  <system.web>
+    <compilation debug="true" targetFramework="4.0"/>
+
+    <webServices>
+      <protocols>
+        <add name="HttpGet"/>
+        <add name="HttpPost"/>
+      </protocols>
+    	<defaultDocument>
+            <files>
+                <clear/>               
+                <add value="index"/>
+            </files>
+        </defaultDocument>
+    </webServices>
+  </system.web>
+  <appSettings>
+    <add key="SendMail" value="true"/>
+    <add key="FromMail" value="meta.childrenclinic@gmail.com"/>
+    <add key="Password" value="Vbkiller.43"/>
+    
+    <add key="Host" value="smtp.gmail.com"/>
+    
+    
+  
+  </appSettings>
+  
+</configuration>
