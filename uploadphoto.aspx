@@ -9,7 +9,7 @@
     <script src="js/clinic.js"></script>
     <script src="js/jquery.min.js"></script>
 </head>
-<body>
+<body onload="getphotolist()">
     <form id="form1" runat="server">
         <div style="max-width:400px;margin:auto;">
             

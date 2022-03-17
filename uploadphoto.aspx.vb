@@ -26,7 +26,5 @@ Partial Class upload
 
     End Sub
 
-    Public Sub LoadImagelist()
 
-    End Sub
 End Class

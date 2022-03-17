@@ -1,3 +1,38 @@
+function getphotolist() {
+    $.ajax({
+        cache: false,
+        async: false,
+        type: "Get",
+        dataType: "Json",
+        contentType: "application/json; charset=utf-8",
+        url: "clinicservice.asmx/GetPhotoList",
+        data: '',
+        complete: function () {
+
+        },
+        success: function (data) {
+            var datalength = data.d.length;
+            var html = '';
+            html += '<table>';
+            html += '<tr><td>FileName</td><td>Index</td><td>CreatedDate</td><td></td></tr>';
+            for (var i = 0; i < datalength; i++) {
+                var id = data.d[i].ID;
+                var filename = data.d[i].PhotoUrl;
+                var index = data.d[i].PhotoIndex;
+                var createddate = data.d[i].CreatedDate;
+                html += '<tr><td>' + filename + '</td><td>' + index + '</td><td>' + createddate + '</td>';
+                html += '<td><input type="button" value="Remove" onclick="removefile(' + id + ')" /></td>';
+                html += '</tr>';
+
+            }
+            html += '</table>';
+            $("#div_list").html(html);
+        },
+        error: function (result) {
+            console.log(result);
+        }
+    });
+}
 function change_menu(menuname) {
     $.ajax({
         cache: false,

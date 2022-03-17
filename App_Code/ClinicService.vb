@@ -4,6 +4,8 @@ Imports System.Web.Services
 Imports System.Web.Services.Protocols
 Imports System.Net
 Imports System.Net.Mail
+Imports System.Data
+Imports System.Data.SqlClient
 
 
 ' To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line.
@@ -15,7 +17,7 @@ Imports System.Net.Mail
 Public Class ClinicService
     Inherits System.Web.Services.WebService
     <WebMethod()>
-   Public Function SendEmailandTelegram(toemail As String, subject As String, firstname As String, lastname As String, service As String, phone As String, a_date As String, a_time As String, message As String) As String
+    Public Function SendEmailandTelegram(toemail As String, subject As String, firstname As String, lastname As String, service As String, phone As String, a_date As String, a_time As String, message As String) As String
 
         Try
             SendEmail(toemail, subject, firstname, lastname, service, phone, a_date, a_time, message)
@@ -34,8 +36,56 @@ Public Class ClinicService
 
     End Function
 
+    Public connectionstring As String = "Data Source=SQL5107.site4now.net;Initial Catalog=db_a54acb_metaclinic;User Id=db_a54acb_metaclinic_admin;Password=reoun168"
 
-  Public Function TelegramSendMessage(ByVal apilToken As String, ByVal Chatid As String, ByVal text As String) As String
+    Public Class CLPhoto
+        Public Property ID As Integer
+        Public Property PhotoUrl As String
+        Public Property PhotoIndex As Integer
+        Public Property CreatedDate As String
+        Public Property CreatedBy As String
+
+    End Class
+    Public Function GetPhotoList() As List(Of CLPhoto)
+        Dim ds As New DataSet
+        Dim cmd As New SqlCommand
+        Dim adapter As New SqlDataAdapter
+        Using cn As New SqlConnection
+            cn.ConnectionString = connectionstring
+            cn.Open()
+            cmd.CommandText = "SELECT ID, PhotoUrl, PhotoIndex, CreatedDate, CreatedBy from tblPhoto Where Deleted=0 Order by PhotoIndex asc"
+
+            cmd.CommandType = CommandType.Text
+            cmd.Connection = cn
+            adapter.SelectCommand = cmd
+            'fill the dataset
+            adapter.Fill(ds)
+            'return the dataset
+            cn.Close()
+        End Using
+
+        Dim lstPhoto As New List(Of CLPhoto)
+        For i = 0 To ds.Tables(0).Rows.Count - 1
+            Dim ID As Integer = ds.Tables(0).Rows(i)("ID")
+            Dim PhotoUrl As String = ds.Tables(0).Rows(i)("PhotoUrl").ToString
+            Dim PhotoIndex As Integer = ds.Tables(0).Rows(i)("ID")
+            Dim CreatedDate As String = CDate(ds.Tables(0).Rows(i)("CreatedDate")).ToString("dd/MM/yyyy HH:mm")
+            Dim CreatedBy As String = ds.Tables(0).Rows(i)("CreatedBy").ToString
+            Dim clPhoto As New CLPhoto
+            clPhoto.ID = ID
+            clPhoto.PhotoUrl = PhotoUrl
+            clPhoto.PhotoIndex = PhotoIndex
+            clPhoto.CreatedDate = CreatedDate
+            clPhoto.CreatedBy = CreatedBy
+            lstPhoto.Add(clPhoto)
+
+
+        Next
+        Return lstPhoto
+    End Function
+
+
+    Public Function TelegramSendMessage(ByVal apilToken As String, ByVal Chatid As String, ByVal text As String) As String
         ServicePointManager.Expect100Continue = True
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12
 
@@ -78,9 +128,9 @@ Public Class ClinicService
         Dim pagename As String = HttpContext.Current.Request.Cookies("UserInfo").Value
         pagename = pagename.Replace("Pagename=", "").Replace(".aspx", "")
 
-if pagename="" then
-pagename="index"
-end if
+        If pagename = "" Then
+            pagename = "index"
+        End If
 
         Dim PageLanguage As String = HttpContext.Current.Request.Cookies("PageLanguage").Value
         Dim CurrentLanguage As String = PageLanguage.Replace("Language=", "")
@@ -151,34 +201,34 @@ end if
 
         Dim html As String = "<div style='padding: 1rem;'>"
         html &= "<h3 style='font-size 16px; margin-bottom: 30px; color: #772879; text-transform: uppercase; letter-spacing: 3px; font-weight: 600;'>Appointment </h3>"
-html &="<div class=''>"
-html &= "<div class='form-group'>First Name: <b>" & firstname & "</b></div>"
-html &="<div class='form-group'>Last Name: <b>" & lastname & "</b></div>"
-html &= "</div>"
-html &="<div class=''>"
-html &= "<div class='form-group'>"
-html &="<div class='form-field'>"
-html &= "<div class='select-wrap'>"
-html &="<div class='icon'>&nbsp;</div>"
-        html &= "Selected Service: <b>" & service & "</b>"
-        html &="</div>"
+        html &= "<div class=''>"
+        html &= "<div class='form-group'>First Name: <b>" & firstname & "</b></div>"
+        html &= "<div class='form-group'>Last Name: <b>" & lastname & "</b></div>"
         html &= "</div>"
-        html &="<div class='form-group'>Phone: <b>" & phone & "</b></div>"
-        html &= "</div>"
-        html &="<div class=''>"
+        html &= "<div class=''>"
         html &= "<div class='form-group'>"
-        html &="<div class='input-wrap'>"
+        html &= "<div class='form-field'>"
+        html &= "<div class='select-wrap'>"
         html &= "<div class='icon'>&nbsp;</div>"
-        html &="Date: <b>" & a_date & "</b>"
-        html &= "<br />"
-        html &="Time: <b>" & a_time & "</b>"
+        html &= "Selected Service: <b>" & service & "</b>"
         html &= "</div>"
-        html &="</div>"
+        html &= "</div>"
+        html &= "<div class='form-group'>Phone: <b>" & phone & "</b></div>"
+        html &= "</div>"
+        html &= "<div class=''>"
+        html &= "<div class='form-group'>"
+        html &= "<div class='input-wrap'>"
+        html &= "<div class='icon'>&nbsp;</div>"
+        html &= "Date: <b>" & a_date & "</b>"
+        html &= "<br />"
+        html &= "Time: <b>" & a_time & "</b>"
+        html &= "</div>"
+        html &= "</div>"
         html &= "<div class=''>"
         html &= "Message: <b>" & message & "</b>"
 
         html &= "</div>"
-        html &="</div>"
+        html &= "</div>"
         Return html
     End Function
     <WebMethod>
