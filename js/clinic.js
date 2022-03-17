@@ -39,11 +39,10 @@ function changelanguage() {
         error: function (result) {
             console.log(result);
         }
-    });
-
-   
+    });  
    
 }
+
 function shownav(e) {
     $("#ftco-nav").show();
 
