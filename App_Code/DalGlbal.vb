@@ -16,7 +16,7 @@ Public Class DalGlbal
 
 
 
-    Public Shared Function UploadPicture(FileUpload As FileUpload, Folder As String) As String
+    Public Shared Function UploadPicture(FileUpload As FileUpload, Folder As String, PhotoIndex As Integer, Username As String) As String
         If (FileUpload.HasFile = False) Then
             ' No file uploaded!
             Return "no file"
@@ -25,7 +25,11 @@ Public Class DalGlbal
             Dim FileName As String = Replace(Now.ToString("yyyy-MM-dd HH:mm:ss") & ".jpg", "-", "_").Replace(":", "_").Replace(" ", "_")  'FileUpload.FileName
             'Dim f As Boolean = FtpHelper.UploadFileFTP(FileUpload.FileBytes, FileName, "uploadstudentphototp", "pass$$$$", DalConnection.ftpServer)
             UploadPhoto(FileUpload, Folder, FileName)
-            Return "~/Upload/" & Folder & "/" & FileName
+            Dim photourl As String = "Upload/" & Folder & "/" & FileName
+
+            add_photo(photourl, PhotoIndex, Username)
+            Return photourl
+
 
         End If
     End Function
@@ -106,7 +110,28 @@ Public Class DalGlbal
         Return ""
     End Function
 
+    Public Function remove_photo(ID As Integer) As String
+        Dim conn As String = getConnectionString()
+        Dim cmd As New SqlCommand
+        Dim adapter As New SqlDataAdapter
 
+
+
+        'execute the command
+        Using cn As New SqlConnection
+
+            cn.ConnectionString = conn
+            cn.Open()
+            cmd.CommandText = "Update tblPhoto set Deleted=1 where ID= " & ID
+            cmd.Connection = cn 'assign the connection
+
+            cmd.ExecuteNonQuery()
+            cn.Close()
+
+        End Using
+
+        Return ""
+    End Function
     Public Shared Function get_list() As String
         Dim ds As New DataSet
         Dim cmd As New SqlCommand

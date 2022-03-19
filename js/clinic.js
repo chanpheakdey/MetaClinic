@@ -1,8 +1,30 @@
-function getphotolist() {
+function removefile(id) {
     $.ajax({
         cache: false,
         async: false,
-        type: "Get",
+        type: "Post",
+        dataType: "Json",
+        contentType: "application/json; charset=utf-8",
+        url: "clinicservice.asmx/RemovePhoto",
+        data: '{ID:' + id + '}',
+        complete: function () {
+
+        },
+        success: function (data) {
+            getphotolist();
+        },
+        error: function (result) {
+            console.log(result);
+        }
+    });
+
+}
+function getphotolist() {
+    
+    $.ajax({
+        cache: false,
+        async: false,
+        type: "Post",
         dataType: "Json",
         contentType: "application/json; charset=utf-8",
         url: "clinicservice.asmx/GetPhotoList",
@@ -20,7 +42,7 @@ function getphotolist() {
                 var filename = data.d[i].PhotoUrl;
                 var index = data.d[i].PhotoIndex;
                 var createddate = data.d[i].CreatedDate;
-                html += '<tr><td>' + filename + '</td><td>' + index + '</td><td>' + createddate + '</td>';
+                html += '<tr><td><img src="' + filename + '" style="height:30px;" /></td><td>' + index + '</td><td>' + createddate + '</td>';
                 html += '<td><input type="button" value="Remove" onclick="removefile(' + id + ')" /></td>';
                 html += '</tr>';
 

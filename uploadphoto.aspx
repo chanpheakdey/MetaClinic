@@ -8,12 +8,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <script src="js/clinic.js"></script>
     <script src="js/jquery.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            getphotolist();
+        });
+
+    </script>
+    <style>
+        table {
+    border: 1px solid black;
+}
+
+th,td {
+    border: 1px solid black;
+    width: 100px;
+    overflow: hidden;
+    padding:5px;
+}
+
+.tbldate{
+    border:none;
+}
+.tbldate tr td {
+    border: none;
+}
+
+.f-money{
+    text-align:right;
+}
+    </style>
 </head>
 <body onload="getphotolist()">
     <form id="form1" runat="server">
         <div style="max-width:400px;margin:auto;">
             
-                <table align="center">
+                <table align="center" class="tbldate">
                     <tr>
                         <td width="100%">Upload Image</td>
                     </tr>
@@ -34,21 +65,24 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        Order:
-                                        <asp:TextBox ID="txtIndex" runat="server" Width="50px">1</asp:TextBox>
+                                        <div style="padding:5px;">1- Order:<asp:TextBox ID="txtIndex" runat="server" Width="50px">1</asp:TextBox></div>
+                                        
+                                        <div style="padding:5px;">1- Choose File:<asp:FileUpload ID="UploadTest" runat="server" TabIndex="17" Visible="True" Width="4cm" /></div>
+                                        <div style="padding:5px;">
+                                            <asp:Button ID="btnShow" runat="server" style="height: 26px" TabIndex="18" Text="Upload" Width="78px" />
+                                        </div>
+                                        
+                                        
                                     </td>
                                     <td>
-                                        <asp:FileUpload ID="UploadTest" runat="server" TabIndex="17" Visible="True" Width="4cm" />
+                                        
                                     </td>
                                     <td>
-                                        <asp:Button ID="btnShow" runat="server" style="height: 26px" TabIndex="18" Text="Upload" Width="78px" />
-                                    </td>
+                                        &nbsp;</td>
                                 </tr>
                                 <tr>
-                                    <td width="4cm">&nbsp;</td>
-                                    <td width="4cm">&nbsp;</td>
-                                    <td width="4cm">
-                                        <asp:Label ID="lblInfo" runat="server" ForeColor="Red" style="text-align: center"></asp:Label>
+                                    <td colspan="3" style="text-align:center;">
+                                        <asp:Label ID="lblInfo" runat="server" ForeColor="Red"></asp:Label>
                                     </td>
                                 </tr>
                                 </table>

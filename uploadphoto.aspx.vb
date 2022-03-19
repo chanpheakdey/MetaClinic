@@ -9,17 +9,20 @@ Partial Class upload
 
         Try
             Dim BalGl As New DalGlbal
-
-            Dim photo_url As String = BalGl.UploadPicture(UploadTest, "services")
+            Dim photoindex As Integer = Val(txtIndex.Text)
+            Dim photo_url As String = BalGl.UploadPicture(UploadTest, "services", photoindex, "")
 
             ImageContact.ImageUrl = photo_url
 
             lblInfo.Text = "Upload Success! "
             lblInfo.ForeColor = Drawing.Color.Blue
+
         Catch
             lblInfo.Text = "Error Upload!"
             lblInfo.ForeColor = Drawing.Color.Red
         End Try
+
+        Page.ClientScript.RegisterStartupScript(Me.GetType(), "CallMyFunction", "getphotolist()", True)
     End Sub
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load

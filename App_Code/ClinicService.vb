@@ -36,7 +36,7 @@ Public Class ClinicService
 
     End Function
 
-    Public connectionstring As String = "Data Source=SQL5107.site4now.net;Initial Catalog=db_a54acb_metaclinic;User Id=db_a54acb_metaclinic_admin;Password=reoun168"
+    Public Shared connectionstring As String = "Data Source=SQL5107.site4now.net;Initial Catalog=db_a54acb_metaclinic;User Id=db_a54acb_metaclinic_admin;Password=reoun168"
 
     Public Class CLPhoto
         Public Property ID As Integer
@@ -46,6 +46,17 @@ Public Class ClinicService
         Public Property CreatedBy As String
 
     End Class
+
+
+
+
+    <WebMethod()>
+    Public Function RemovePhoto(ID As String) As String
+        Dim Dal As New DalGlbal
+        Dal.remove_photo(ID)
+        Return ""
+    End Function
+    <WebMethod()>
     Public Function GetPhotoList() As List(Of CLPhoto)
         Dim ds As New DataSet
         Dim cmd As New SqlCommand
