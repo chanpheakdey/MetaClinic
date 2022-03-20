@@ -79,7 +79,7 @@ Public Class ClinicService
         For i = 0 To ds.Tables(0).Rows.Count - 1
             Dim ID As Integer = ds.Tables(0).Rows(i)("ID")
             Dim PhotoUrl As String = ds.Tables(0).Rows(i)("PhotoUrl").ToString
-            Dim PhotoIndex As Integer = ds.Tables(0).Rows(i)("ID")
+            Dim PhotoIndex As Integer = ds.Tables(0).Rows(i)("PhotoIndex")
             Dim CreatedDate As String = CDate(ds.Tables(0).Rows(i)("CreatedDate")).ToString("dd/MM/yyyy HH:mm")
             Dim CreatedBy As String = ds.Tables(0).Rows(i)("CreatedBy").ToString
             Dim clPhoto As New CLPhoto
@@ -95,6 +95,28 @@ Public Class ClinicService
         Return lstPhoto
     End Function
 
+    <WebMethod()>
+    Public Function CountIndicator() As Integer
+        Dim ds As New DataSet
+        Dim cmd As New SqlCommand
+        Dim adapter As New SqlDataAdapter
+        Using cn As New SqlConnection
+            cn.ConnectionString = connectionstring
+            cn.Open()
+            cmd.CommandText = "SELECT count(ID) as Total from tblPhoto Where Deleted=0"
+
+            cmd.CommandType = CommandType.Text
+            cmd.Connection = cn
+            adapter.SelectCommand = cmd
+            'fill the dataset
+            adapter.Fill(ds)
+            'return the dataset
+            cn.Close()
+        End Using
+
+        Return ds.Tables(0).Rows(0)("Total")
+
+    End Function
 
     Public Function TelegramSendMessage(ByVal apilToken As String, ByVal Chatid As String, ByVal text As String) As String
         ServicePointManager.Expect100Continue = True

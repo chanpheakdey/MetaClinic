@@ -19,6 +19,8 @@ function removefile(id) {
     });
 
 }
+
+
 function getphotolist() {
     
     $.ajax({

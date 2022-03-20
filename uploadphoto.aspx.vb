@@ -26,8 +26,19 @@ Partial Class upload
     End Sub
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-
+        If Page.IsPostBack = False Then
+            MultiView1.ActiveViewIndex = 0
+        End If
     End Sub
 
 
+
+    Protected Sub btnLogin_Click(sender As Object, e As EventArgs) Handles btnLogin.Click
+        If (txtUsername.Text = "meta" And txtPassword.Text = "meta@2022") Then
+            MultiView1.ActiveViewIndex = 1
+        Else
+            lblInfologin.Text = "Invalid Username or Password."
+
+        End If
+    End Sub
 End Class
